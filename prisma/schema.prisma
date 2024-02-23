@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(uuid())
+  username String @unique
+  password String
+}
+
+model State {
+  id   String @id @default(uuid())
+  name String
+  City City?
+}
+
+model City {
+  id           String        @id @default(uuid())
+  name         String
+  state_id     String        @unique
+  state        State         @relation(fields: [state_id], references: [id])
+  Neighborhood Neighborhood?
+}
+
+model Neighborhood {
+  id      String @id @default(uuid())
+  name    String
+  city_id String @unique
+  city    City   @relation(fields: [city_id], references: [id])
+}
+
+model PropertyStage {
+  id       String     @id @default(uuid())
+  name     String     @unique
+  Property Property[]
+}
+
+model PropertyType {
+  id       String     @id @default(uuid())
+  name     String     @unique
+  Property Property[]
+}
+
+model Property {
+  id                   String                    @id @default(uuid())
+  title                String
+  building_name        String
+  dormitory_count      Int
+  suite_count          Int
+  private_garage_count Int
+  shared_garage_count  Int
+  shower_count         Int
+  total_area_m         Float
+  private_area_m       Float
+  price                Float
+  description          String
+  property_type_id     String?
+  property_type        PropertyType?             @relation(fields: [property_type_id], references: [id])
+  stage_id             String?
+  stage                PropertyStage?            @relation(fields: [stage_id], references: [id])
+  characteristics      PropertyCharacteristics[]
+  details              PropertyDetails[]
+  deals                PropertyDealTypes[]
+}
+
+model PropertyCharacteristics {
+  id         String     @id @default(uuid())
+  name       String
+  properties Property[]
+}
+
+model PropertyDetails {
+  id         String     @id @default(uuid())
+  name       String
+  properties Property[]
+}
+
+model PropertyDealTypes {
+  id         String     @id @default(uuid())
+  name       String
+  properties Property[]
+}
