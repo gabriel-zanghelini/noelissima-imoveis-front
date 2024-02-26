@@ -1,37 +1,31 @@
-export default function Page() {
-  async function login(formData: FormData) {
-    'use server'
+import { redirect } from 'next/navigation'
+import { getSession, login, logout } from '@/utils/session'
 
-    console.log(formData)
-
-    const rawFormData = {
-      username: formData.get('username'),
-      password: formData.get('password'),
-    }
-
-    const response = await fetch('http://localhost:5000/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(rawFormData),
-    })
-
-    if (response.ok) {
-      console.log(await response.json())
-    } else {
-      // Handle errors
-    }
-  }
-
+export default async function Page() {
+  const session = await getSession()
   return (
-    <form action={login}>
-      <input type='text' name='username' id='username' placeholder='username' />
-      <input
-        type='password'
-        name='password'
-        id='password'
-        placeholder='password'
-      />
-      <button type='submit'>Login</button>
-    </form>
+    <section>
+      <form
+        action={async (formData) => {
+          'use server'
+          await login(formData)
+          redirect('/')
+        }}
+      >
+        <input type='email' placeholder='Email' />
+        <br />
+        <button type='submit'>Login</button>
+      </form>
+      <form
+        action={async () => {
+          'use server'
+          await logout()
+          redirect('/')
+        }}
+      >
+        <button type='submit'>Logout</button>
+      </form>
+      <pre>{JSON.stringify(session, null, 2)}</pre>
+    </section>
   )
 }
