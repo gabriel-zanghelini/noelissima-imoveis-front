@@ -2,9 +2,7 @@ import bcrypt from 'bcrypt'
 import { SignJWT, jwtVerify } from 'jose'
 import { cookies } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client/extension'
-
-const prisma = new PrismaClient()
+import { prisma } from './prisma'
 
 const key = new TextEncoder().encode(process.env.JWT_SECRET)
 
@@ -35,9 +33,14 @@ export async function decrypt(input: string): Promise<any> {
   return payload
 }
 
-export async function login(formData: FormData) {
-  const username = formData.get('username')?.toString() ?? ''
-  const password = formData.get('password')?.toString() ?? ''
+export async function login({
+  password,
+  username,
+}: {
+  username: string
+  password: string
+}) {
+  console.log('aaa', username, password)
 
   if (username === '' || password === '')
     throw 'Username or password cannot be empty.'
