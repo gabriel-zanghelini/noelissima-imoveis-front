@@ -40,14 +40,15 @@ export async function login({
   username: string
   password: string
 }) {
-  console.log('aaa', username, password)
+  console.log('login', username, password)
 
-  if (username === '' || password === '')
-    throw 'Username or password cannot be empty.'
+  if (username === '' || password === '') throw 'EmptyUsernameOrPassword'
 
   const { user, match } = await matchUsernamePassword(username, password)
 
-  if (!user || !match) throw 'Username or password is incorrect.'
+  console.log(match, user)
+
+  if (!user || !match) throw 'CredentialsSignIn'
 
   // Create the session
   const expires = new Date(Date.now() + 10 * 1000)

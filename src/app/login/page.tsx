@@ -1,51 +1,29 @@
-import { redirect } from 'next/navigation'
-import { getSession, login, logout } from '@/utils/session'
-import { useFormState } from 'react-dom'
+'use client'
 
-async function callLogin(
-  prevState: {
-    message: string
-  },
-  formData: FormData
-) {
-  'use server'
-  await login({
-    username: (formData.get('username') as string) || '',
-    password: (formData.get('password') as string) || '',
-  })
-  redirect('/')
-}
+import { authenticate } from '@/utils/actions'
+import { useFormState, useFormStatus } from 'react-dom'
 
-export default async function Page() {
-  const session = await getSession()
+export default function Page() {
+  const [errorMessage, dispatch] = useFormState(authenticate, undefined)
 
-  const initialState = {
-    message: '',
-  }
-
-  const [state, formAction] = useFormState(callLogin, initialState)
+  console.log(errorMessage)
 
   return (
-    <section>
-      <form action={formAction}>
-        <input type='text' placeholder='Username' />
-        <input type='password' placeholder='Password' />
-        <br />
-        <button type='submit'>Login</button>
-      </form>
-      <form
-        action={async () => {
-          'use server'
-          await logout()
-          redirect('/')
-        }}
-      >
-        <button type='submit'>Logout</button>
-        <p aria-live='polite' className='sr-only' role='status'>
-          {state?.message}
-        </p>
-      </form>
-      <pre>{JSON.stringify(session, null, 2)}</pre>
-    </section>
+    <form action={dispatch}>
+      <input type='test' name='username' placeholder='Username' required />
+      <input type='password' name='password' placeholder='Password' required />
+      <LoginButton />
+      <div>{errorMessage && <p>{errorMessage}</p>}</div>
+    </form>
+  )
+}
+
+function LoginButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    <button aria-disabled={pending} type='submit'>
+      Login
+    </button>
   )
 }

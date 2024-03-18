@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt'
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
@@ -11,7 +12,7 @@ async function main() {
       update: {},
       create: {
         username: 'noeli_admin',
-        password: process.env.SEED_USER_PASSWORD,
+        password: await bcrypt.hash(process.env.SEED_USER_PASSWORD, 10),
       },
     })
 
