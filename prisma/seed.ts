@@ -8,10 +8,10 @@ async function main() {
     console.log('No password for seed user!')
   } else {
     const user = await prisma.user.upsert({
-      where: { username: 'noeli_admin' },
+      where: { email: 'noeli_admin@gmail.com' },
       update: {},
       create: {
-        username: 'noeli_admin',
+        email: 'noeli_admin@gmail.com',
         password: await bcrypt.hash(process.env.SEED_USER_PASSWORD, 10),
       },
     })

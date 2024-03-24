@@ -10,7 +10,7 @@ export default function Page() {
 
   return (
     <form action={dispatch}>
-      <input type='test' name='username' placeholder='Username' required />
+      <input type='test' name='email' placeholder='Email' required />
       <input type='password' name='password' placeholder='Password' required />
       <LoginButton />
       <div>{errorMessage && <p>{errorMessage}</p>}</div>

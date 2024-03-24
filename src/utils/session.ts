@@ -6,8 +6,8 @@ import { prisma } from './prisma'
 
 const key = new TextEncoder().encode(process.env.JWT_SECRET)
 
-async function matchUsernamePassword(username: string, password: string) {
-  const user = await prisma.user.findUnique({ where: { username: username } })
+async function matchEmailPassword(email: string, password: string) {
+  const user = await prisma.user.findUnique({ where: { email: email } })
 
   if (!user) return { user, match: false }
 
@@ -35,16 +35,16 @@ export async function decrypt(input: string): Promise<any> {
 
 export async function login({
   password,
-  username,
+  email,
 }: {
-  username: string
+  email: string
   password: string
 }) {
-  console.log('login', username, password)
+  console.log('login', email, password)
 
-  if (username === '' || password === '') throw 'EmptyUsernameOrPassword'
+  if (email === '' || password === '') throw 'EmptyEmailOrPassword'
 
-  const { user, match } = await matchUsernamePassword(username, password)
+  const { user, match } = await matchEmailPassword(email, password)
 
   console.log(match, user)
 
